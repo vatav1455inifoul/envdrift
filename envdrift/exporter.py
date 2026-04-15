@@ -67,3 +67,15 @@ def export_csv(result: DriftResult, env_a: str = "env_a", env_b: str = "env_b") 
         writer.writerow([key, "value_changed", val_a, val_b])
 
     return output.getvalue()
+
+
+def export_json_file(
+    result: Union[DriftResult, MultiDiffResult],
+    path: str,
+    env_names: list = None,
+    indent: int = 2,
+) -> None:
+    """Write a drift result as JSON to a file at the given path."""
+    content = export_json(result, env_names=env_names, indent=indent)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
