@@ -70,6 +70,15 @@ def test_ignore_values_no_drift_on_value_change(tmp_env):
     assert not result.has_drift
 
 
+def test_ignore_values_still_detects_missing_key(tmp_env):
+    """Even with ignore_values=True, a key absent in one env is still drift."""
+    a = tmp_env("a.env", "KEY=foo\nEXTRA=only_a\n")
+    b = tmp_env("b.env", "KEY=bar\n")
+    result = multi_diff({"a": a, "b": b}, ignore_values=True)
+    assert result.has_drift
+    assert "EXTRA" in result.missing_in_some
+
+
 def test_pairwise_keyed_by_base_and_other(tmp_env):
     a = tmp_env("a.env", "KEY=1\n")
     b = tmp_env("b.env", "KEY=2\n")
