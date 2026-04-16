@@ -61,6 +61,16 @@ def test_list_shows_entries(audit_dir: str, capsys) -> None:
     assert "key mismatch" in out
 
 
+def test_list_shows_multiple_entries(audit_dir: str, capsys) -> None:
+    """Ensure all recorded entries appear in list output."""
+    record_audit(env_files=[".env"], drift_detected=False, summary="first", audit_dir=audit_dir)
+    record_audit(env_files=[".env"], drift_detected=True, summary="second", audit_dir=audit_dir)
+    cmd_audit_list(_ns(audit_dir=audit_dir))
+    out = capsys.readouterr().out
+    assert "first" in out
+    assert "second" in out
+
+
 def test_show_valid_entry(audit_dir: str, capsys) -> None:
     path = record_audit(
         env_files=[".env"],
