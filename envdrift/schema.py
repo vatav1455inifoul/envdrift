@@ -40,7 +40,10 @@ def load_schema(path: str | Path) -> dict[str, Any]:
     if not p.exists():
         raise FileNotFoundError(f"Schema file not found: {path}")
     with p.open() as f:
-        return json.load(f)
+        try:
+            return json.load(f)
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON in schema file '{path}': {e}") from e
 
 
 def validate_env(env: dict[str, str], schema: dict[str, Any], env_name: str = "env") -> SchemaResult:
