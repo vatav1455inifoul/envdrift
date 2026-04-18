@@ -11,15 +11,19 @@ from envdrift.profile_reporter import print_profile_report
 def cmd_profile(args: argparse.Namespace) -> int:
     """Profile one or more .env files and print statistics."""
     exit_code = 0
-    for path in args.envfiles:
+    for i, path in enumerate(args.envfiles):
         try:
             result = profile_env(path)
         except FileNotFoundError:
             print(f"[error] file not found: {path}", file=sys.stderr)
             exit_code = 1
             continue
+        except PermissionError:
+            print(f"[error] permission denied: {path}", file=sys.stderr)
+            exit_code = 1
+            continue
         print_profile_report(result, color=not args.no_color)
-        if len(args.envfiles) > 1:
+        if i < len(args.envfiles) - 1:
             print()
     return exit_code
 
