@@ -16,6 +16,7 @@ python -m envdrift watch .env .env.production --interval 3
 |------|---------|-------------|
 | `--interval` | `2.0` | Seconds between polls |
 | `--ignore-values` | off | Report only key presence/absence, not value changes |
+| `--quiet` | off | Suppress output when no drift is detected |
 
 ## How it works
 
@@ -54,3 +55,5 @@ The watcher runs until interrupted with `Ctrl-C`.
   not instant.
 - Only supports **two** files at a time. For multi-env watching, run multiple
   watcher processes or open a GitHub issue — PRs welcome!
+- If a watched file is **deleted** while the watcher is running, a warning is
+  printed and the watcher pauses until the file reappears.
