@@ -43,6 +43,32 @@ def parse_env_file(filepath: str | Path) -> Dict[str, Optional[str]]:
     return result
 
 
+def parse_env_string(content: str) -> Dict[str, Optional[str]]:
+    """
+    Parse a .env-formatted string and return a dict of key -> value pairs.
+
+    Useful for testing or when env content is already loaded into memory.
+    Applies the same parsing rules as parse_env_file.
+    """
+    result: Dict[str, Optional[str]] = {}
+
+    for line in content.splitlines():
+        line = line.rstrip("\n")
+
+        if not line.strip() or COMMENT_PATTERN.match(line):
+            continue
+
+        match = ENV_LINE_PATTERN.match(line)
+        if not match:
+            continue
+
+        key = match.group("key")
+        raw_value = match.group("value").strip()
+        result[key] = _clean_value(raw_value)
+
+    return result
+
+
 def _clean_value(raw: str) -> Optional[str]:
     """Strip quotes and inline comments from a raw env value."""
     if not raw:
