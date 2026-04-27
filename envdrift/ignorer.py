@@ -40,3 +40,12 @@ def filter_keys(
     """Return a copy of env with ignored keys removed."""
     plist = list(patterns)
     return {k: v for k, v in env.items() if not should_ignore(k, plist)}
+
+
+def ignored_keys(env: dict[str, str], patterns: Iterable[str]) -> list[str]:
+    """Return a sorted list of keys from env that match any ignore pattern.
+
+    Useful for reporting which keys were excluded from a drift check.
+    """
+    plist = list(patterns)
+    return sorted(k for k in env if should_ignore(k, plist))
